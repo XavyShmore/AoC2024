@@ -29,15 +29,32 @@ def count_word(word, grid, directions):
 
     return total
 
-def main():
+def search_xmas(grid):
     searched_word = "XMAS"
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1)]
+    return count_word(searched_word, grid, directions)
 
+def detect_x_mas(grid):
+    searched_word = "MAS"
+    directions = [(1, 1), (-1, -1)]
+
+    total = 0
+
+    for i, row in enumerate(grid):
+        for j, col in enumerate(row):
+            for direction in directions:
+                if detect_word(searched_word, grid, (i, j), direction):
+                    if detect_word(searched_word, grid, ( i + direction[0] * (len(searched_word) - 1), j ), (-1 * direction[0], 1 * direction[0])): total += 1
+                    elif detect_word(searched_word, grid, (i, j + direction[1] * (len(searched_word) - 1)), (1 * direction[0], -1 * direction[0])): total += 1
+
+    return total
+
+
+def main():
     grid = parse("input.txt")
 
-    count = count_word(searched_word, grid, directions)
-
-    print(count)
+    print(f'Challenge 1: {search_xmas(grid)}')
+    print(f'Challenge 2: {detect_x_mas(grid)}')
 
 if __name__ == "__main__":
     main()
