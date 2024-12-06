@@ -8,6 +8,8 @@ class Guard:
         self.visited_squares = np.zeros(level_map.shape)
         self.visited_squares[position] = 1
 
+        self.visited_squares_and_directions = set()
+
         self.level_map = level_map
 
     def rotate(self):
@@ -35,14 +37,18 @@ class Guard:
         self.position = self.position + self.direction
         self.visited_squares[tuple(self.position)] = 1
 
-    def calculate_visited_squares(self) -> int:
+    def in_a_loop(self):
+        if (tuple(self.position), tuple(self.direction)) in self.visited_squares_and_directions : return True
+
+        self.visited_squares_and_directions.add((tuple(self.position), tuple(self.direction)))
+
+    def calculate_visited_squares(self) -> (int, bool):
         while self.next_move_is_inbounds():
+            if self.in_a_loop(): return self.visited_squares.sum(), True
+
             if self.can_go_forward():
                 self.move_foward()
             else:
                 self.rotate()
 
-        print(self.visited_squares)
-        print(self.level_map)
-
-        return self.visited_squares.sum()
+        return self.visited_squares.sum(), False
