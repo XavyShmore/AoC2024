@@ -15,21 +15,20 @@ def parse(path:str) -> ((int, int), np.array):
                 data.append(characters)
     return position, np.array(data)
 
-def calculate_number_of_loop(position, direction, level_map):
+def calculate_number_of_loop(position, direction, level_map, visited_squares:np.array):
     total = 0
 
-    for i, row in enumerate(level_map):
-        print(f'Row: {i} of 130')
-        for j, char in enumerate(row):
-            if char == '.':
-                level_map[i][j] = '#'
-                guard = Guard(position, direction, level_map)
+    for e in visited_squares:
+        char = level_map[e[0]][e[1]]
+        if char == '.':
+            level_map[e[0]][e[1]] = '#'
+            guard = Guard(position, direction, level_map)
 
-                visited_squares, is_looping = guard.calculate_visited_squares()
-                if is_looping:
-                    total+=1
+            number_of_visited_squares, is_looping = guard.calculate_visited_squares()
+            if is_looping:
+                total+=1
 
-                level_map[i][j] = '.'
+            level_map[e[0]][e[1]] = '.'
 
     return total
 
@@ -42,7 +41,9 @@ def main():
     guard = Guard(position, direction, level_map)
 
     print(f'Visited squares (Challenge 1): {guard.calculate_visited_squares()[0]}')
-    print(f'Number of loops (Challenge 2): {calculate_number_of_loop(position, direction, level_map)}')
+
+    visited_squares = guard.visited_squares
+    print(f'Number of loops (Challenge 2): {calculate_number_of_loop(position, direction, level_map, visited_squares)}')
 
 
 
